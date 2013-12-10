@@ -12,9 +12,9 @@ mongoose.connect('mongodb://localhost/todoapp');
 var todoItemSchema = mongoose.Schema({
     text: String,
     completed: Boolean
-})
+});
 
-var todoItem = mongoose.model('TODOItem', todoItemSchema)
+var todoItem = mongoose.model('TODOItem', todoItemSchema);
 
 var app = module.exports = express.createServer();
 
@@ -60,7 +60,6 @@ app.get('/list', function(req, res){
       res.json(items);      
     }
   });
-
 });
 
 app.post('/add', function(req, res){

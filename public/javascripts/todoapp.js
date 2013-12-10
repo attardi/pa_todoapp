@@ -13,7 +13,6 @@ function add(text) {
 	$.post( "/add", {'text':text}, function( data ) {
 		loadList();
 	});
-
 }
 
 function loadList() {

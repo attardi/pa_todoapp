@@ -38,5 +38,15 @@ app.get('/list', function(req, res){
   res.json([{'id': 1, 'text':'compra pane'}, {'id':2, 'text': 'compra latte'}]);
 });
 
+app.post('/add', function(req, res){
+  console.log("add " + req.body.text);
+  res.end();
+});
+
+app.post('/complete', function(req, res){
+  console.log("complete " + req.body.id);
+  res.end();
+});
+
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

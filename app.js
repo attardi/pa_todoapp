@@ -34,7 +34,9 @@ app.configure('production', function(){
 
 app.get('/', routes.index);
 
-
+app.get('/list', function(req, res){
+  res.json([{'id': 1, 'text':'compra pane'}, {'id':2, 'text': 'compra latte'}]);
+});
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

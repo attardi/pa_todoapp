@@ -4,7 +4,13 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+    , http = require('http')
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
+    , errorHandler = require('errorhandler')
+    , logger = require('morgan')
+    , path = require('path')
+    , routes = require('./routes');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/todoapp');
@@ -16,35 +22,32 @@ var todoItemSchema = mongoose.Schema({
 
 var todoItem = mongoose.model('TODOItem', todoItemSchema);
 
-var app = module.exports = express.createServer();
+var app = express();
+var server = http.createServer(app);
 
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser());
-  app.use(express.session({ secret: 'your secret here' }));
-  app.use(require('stylus').middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(require('stylus').middleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+var routes = require('./routes/index');
+var users = require('./routes/users');
 
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
+if (app.get('env') === 'development')
+  app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+else
+  app.use(errorHandler());
 
 // Routes
-
 app.get('/', routes.index);
 
-app.get('/list', function(req, res){
+app.get('/list', function(req, res) {
   todoItem.find({completed: false}, function(err, todoitems) {
     if (err) {
       res.json([]);
@@ -62,19 +65,17 @@ app.get('/list', function(req, res){
   });
 });
 
-app.post('/add', function(req, res){
+app.post('/add', function(req, res) {
   var text = req.body.text;
   console.log("adding " + text);
-  var newItem = new todoItem();
-  newItem.text = text;
-  newItem.completed = false;
+  var newItem = new todoItem({text: text, completed: false});
   newItem.save(function (e) {
     console.log("added " + text);
     res.end();
   });
 });
 
-app.post('/complete', function(req, res){
+app.post('/complete', function(req, res) {
   var id = req.body.id;
   console.log("calling complete " + id);
   todoItem.findOne({_id: id}, function (err, item) {
@@ -95,5 +96,4 @@ app.post('/complete', function(req, res){
   });
 });
 
-app.listen(3000);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+module.exports = app;

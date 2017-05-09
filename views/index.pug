@@ -1,7 +1,13 @@
-h1= title
-p Things to do:
-ul#list
-div.additem
-    form(action="add")
-      input(id="text", type="text", name="text")
-      input(id="add_submit", type="button", value="add")
+head
+  title ToDo List
+  script(type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+  script(type='text/javascript' src='js/todoapp.js')
+  link(rel='stylesheet' href='stylesheets/style.css')
+body
+  h1= title
+  p Things to do:
+  ul#list
+  div.additem
+    form(action='add')
+      input.new-item(id="text", type="text", name="text")
+      button(id="add_submit", type='submit') Add

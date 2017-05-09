@@ -23,12 +23,12 @@ var todoItemSchema = mongoose.Schema({
 var todoItem = mongoose.model('TODOItem', todoItemSchema);
 
 var app = express();
-var server = http.createServer(app);
+//var server = http.createServer(app);
 
 // Configuration
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -96,4 +96,7 @@ app.post('/complete', function(req, res) {
   });
 });
 
-module.exports = app;
+app.listen(8080, function () {
+    console.log('ToDo app listening on port 8080!')
+});
+//module.exports = app;
